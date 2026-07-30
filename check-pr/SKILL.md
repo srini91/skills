@@ -113,7 +113,7 @@ Key Perforce CL fields:
 Before polling checks or collecting review feedback, stop when the change is no longer actionable:
 
 - **GitHub:** skip when `state` is `MERGED` or `CLOSED`, or when `changedFiles` is `0`.
-- **GitLab:** skip when `state` is `merged` or `closed`, or when `changes_count` is `0`.
+- **GitLab:** skip when `state` is `merged` or `closed`, or when `changes_count` is the exact string `"0"`. Treat other strings, including `"1000+"`, as non-empty.
 - **Perforce:** skip submitted changelists and pending changelists with no shelved files.
 
 Report the title or description, current state, and the reason for skipping. Do not wait for checks, analyze comments, switch branches, modify files, or resolve threads for a skipped change.
