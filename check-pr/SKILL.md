@@ -74,7 +74,7 @@ Key field differences between platforms:
 
 **GitHub:**
 ```bash
-gh pr view <PR_NUMBER> --json title,body,state,reviews,comments,headRefName,statusCheckRollup,changedFiles,additions,deletions
+gh pr view <PR_NUMBER> --json title,body,state,reviews,comments,headRefName,statusCheckRollup,changedFiles
 gh api repos/{owner}/{repo}/pulls/<PR_NUMBER>/comments
 ```
 
