@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires git and gh (GitHub CLI), glab (GitLab CLI), or p4 (Perforce CLI) installed and authenticated.
 metadata:
   author: greptileai
-  version: "1.2"
+  version: "1.3"
 allowed-tools: Bash(gh:*) Bash(glab:*) Bash(git:*) Bash(p4:*)
 ---
 
@@ -74,7 +74,7 @@ Key field differences between platforms:
 
 **GitHub:**
 ```bash
-gh pr view <PR_NUMBER> --json title,body,state,reviews,comments,headRefName,statusCheckRollup
+gh pr view <PR_NUMBER> --json title,body,state,reviews,comments,headRefName,statusCheckRollup,changedFiles,additions,deletions
 gh api repos/{owner}/{repo}/pulls/<PR_NUMBER>/comments
 ```
 
@@ -107,6 +107,16 @@ Key Perforce CL fields:
 - `Status`: `pending`, `submitted`, `shelved`
 - `Description`: the CL description / commit message
 - `Files`: list of files in the CL
+
+### 2a. Check actionability
+
+Before polling checks or collecting review feedback, stop when the change is no longer actionable:
+
+- **GitHub:** skip when `state` is `MERGED` or `CLOSED`, or when `changedFiles` is `0`.
+- **GitLab:** skip when `state` is `merged` or `closed`, or when `changes_count` is `0`.
+- **Perforce:** skip submitted changelists and pending changelists with no shelved files.
+
+Report the title or description, current state, and the reason for skipping. Do not wait for checks, analyze comments, switch branches, modify files, or resolve threads for a skipped change.
 
 ### 3. Wait for pending checks
 
@@ -272,6 +282,7 @@ p4 changes -s pending -u $P4USER -c $P4CLIENT -l
 
 Summarize:
 - PR/MR/CL title or description and current state
+- Skipped status and reason, when the early actionability check stops the workflow
 - Platform detected (GitHub / GitLab / Perforce)
 - Status checks summary (passing/failing/pending) — or N/A for Perforce
 - Total issues found
